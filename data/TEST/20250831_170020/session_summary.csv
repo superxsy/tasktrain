@@ -1,0 +1,1 @@
+trial_index,mode,result_code,result_text,trial_start_walltime_iso,trial_duration,wait_L1,wait_L2,wait_L3,I1,I2,release_window,press_L1_time,release_L1_time,press_L2_time,release_L2_time,press_L3_time,release_L3_time,reward_duration_actual,iti_duration_actual,iti_errors_count

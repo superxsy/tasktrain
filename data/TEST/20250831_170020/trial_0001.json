@@ -1,0 +1,51 @@
+{
+  "trial_index": 1,
+  "timestamp": "2025-08-31T17:00:20",
+  "result_code": 0,
+  "reaction_time": 0.5,
+  "config_snapshot": {
+    "mode": "sequence3",
+    "shaping_led": 1,
+    "wait_L1": 3,
+    "wait_L2": 3,
+    "wait_L3": 3,
+    "I1": 0.5,
+    "I2": 0.5,
+    "R_duration": 0.3,
+    "release_window": 1,
+    "ITI_fixed_correct": 1,
+    "ITI_rand_correct": 1,
+    "ITI_fixed_error": 2,
+    "ITI_rand_error": 1,
+    "max_trials": 500,
+    "subject_id": "TEST",
+    "session_label": "20250831_170020",
+    "adaptive_enabled": false,
+    "adaptive_window": 20,
+    "adaptive_threshold_high": 0.85,
+    "adaptive_threshold_low": 0.6,
+    "adaptive_step": 0.1,
+    "min_wait": 1,
+    "max_wait": 5,
+    "arduino_port": "",
+    "led_pins": [
+      22,
+      23,
+      24
+    ],
+    "button_pins": [
+      30,
+      31,
+      32
+    ],
+    "valve_pin": 26,
+    "debounce_time": 0.01,
+    "key_L1": "j",
+    "key_L2": "k",
+    "key_L3": "l",
+    "key_start_pause": " ",
+    "key_reset": "r",
+    "key_mode_switch": "\t",
+    "key_help": "h"
+  }
+}

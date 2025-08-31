@@ -1,0 +1,180 @@
+{
+  "_comment": "小鼠序列训练任务配置文件模板",
+  "_version": "1.0.0",
+  "_description": "此文件包含所有可配置参数的说明和默认值",
+  
+  "subject_id": "M001",
+  "_subject_id_comment": "被试动物ID，用于数据文件命名",
+  
+  "mode": "sequence3",
+  "_mode_comment": "任务模式: sequence3(三键序列) 或 shaping1(单键塑造)",
+  
+  "max_trials": 500,
+  "_max_trials_comment": "单次会话最大试次数",
+  
+  "timing": {
+    "iti_min": 3.0,
+    "_iti_min_comment": "试次间间隔最小时间(秒)",
+    
+    "iti_max": 7.0,
+    "_iti_max_comment": "试次间间隔最大时间(秒)",
+    
+    "wait_L1": 5.0,
+    "_wait_L1_comment": "L1阶段等待时间(秒)",
+    
+    "wait_L2": 5.0,
+    "_wait_L2_comment": "L2阶段等待时间(秒)",
+    
+    "wait_L3": 5.0,
+    "_wait_L3_comment": "L3阶段等待时间(秒)",
+    
+    "release_window": 0.5,
+    "_release_window_comment": "按钮松开检测窗口时间(秒)",
+    
+    "hold_time_min": 0.05,
+    "_hold_time_min_comment": "最小按住时间(秒)",
+    
+    "hold_time_max": 2.0,
+    "_hold_time_max_comment": "最大按住时间(秒)",
+    
+    "reward_duration": 0.1,
+    "_reward_duration_comment": "奖励给予持续时间(秒)"
+  },
+  
+  "shaping": {
+    "shaping_led": 1,
+    "_shaping_led_comment": "塑造模式中使用的LED编号(1-3)"
+  },
+  
+  "adaptive": {
+    "adaptive_enabled": true,
+    "_adaptive_enabled_comment": "是否启用自适应难度调整",
+    
+    "adaptive_window": 20,
+    "_adaptive_window_comment": "自适应计算窗口大小(试次数)",
+    
+    "adaptive_threshold": 0.8,
+    "_adaptive_threshold_comment": "自适应调整阈值(正确率)",
+    
+    "adaptive_step": 0.1,
+    "_adaptive_step_comment": "自适应调整步长(秒)",
+    
+    "adaptive_min_wait": 1.0,
+    "_adaptive_min_wait_comment": "自适应等待时间最小值(秒)",
+    
+    "adaptive_max_wait": 10.0,
+    "_adaptive_max_wait_comment": "自适应等待时间最大值(秒)"
+  },
+  
+  "hardware": {
+    "pins": {
+      "led1": 2,
+      "_led1_comment": "LED1控制引脚",
+      
+      "led2": 3,
+      "_led2_comment": "LED2控制引脚",
+      
+      "led3": 4,
+      "_led3_comment": "LED3控制引脚",
+      
+      "button1": 5,
+      "_button1_comment": "按钮1输入引脚",
+      
+      "button2": 6,
+      "_button2_comment": "按钮2输入引脚",
+      
+      "button3": 7,
+      "_button3_comment": "按钮3输入引脚",
+      
+      "valve": 8,
+      "_valve_comment": "电磁阀控制引脚"
+    },
+    
+    "debounce_time": 0.02,
+    "_debounce_time_comment": "按钮防抖时间(秒)",
+    
+    "arduino_baudrate": 9600,
+    "_arduino_baudrate_comment": "Arduino串口波特率"
+  },
+  
+  "simulation": {
+    "keys": {
+      "button1": "j",
+      "_button1_comment": "模拟按钮1的键盘按键",
+      
+      "button2": "k",
+      "_button2_comment": "模拟按钮2的键盘按键",
+      
+      "button3": "l",
+      "_button3_comment": "模拟按钮3的键盘按键",
+      
+      "pause": "space",
+      "_pause_comment": "暂停/继续快捷键",
+      
+      "reset": "r",
+      "_reset_comment": "重置会话快捷键",
+      
+      "mode_switch": "m",
+      "_mode_switch_comment": "模式切换快捷键"
+    },
+    
+    "visual": {
+      "led_on_color": [0, 255, 0],
+      "_led_on_color_comment": "LED开启时的颜色 [R, G, B]",
+      
+      "led_off_color": [64, 64, 64],
+      "_led_off_color_comment": "LED关闭时的颜色 [R, G, B]",
+      
+      "button_pressed_color": [255, 255, 0],
+      "_button_pressed_color_comment": "按钮按下时的颜色 [R, G, B]",
+      
+      "button_released_color": [128, 128, 128],
+      "_button_released_color_comment": "按钮松开时的颜色 [R, G, B]",
+      
+      "reward_color": [255, 255, 0],
+      "_reward_color_comment": "奖励指示器颜色 [R, G, B]",
+      
+      "background_color": [32, 32, 32],
+      "_background_color_comment": "背景颜色 [R, G, B]",
+      
+      "window_size": [800, 600],
+      "_window_size_comment": "模拟窗口大小 [宽度, 高度]"
+    }
+  },
+  
+  "data": {
+    "data_dir": "data",
+    "_data_dir_comment": "数据保存目录",
+    
+    "save_json": true,
+    "_save_json_comment": "是否保存JSON格式的详细数据",
+    
+    "save_csv": true,
+    "_save_csv_comment": "是否保存CSV格式的汇总数据",
+    
+    "auto_backup": false,
+    "_auto_backup_comment": "是否自动备份数据文件"
+  },
+  
+  "session": {
+    "auto_start": false,
+    "_auto_start_comment": "是否自动开始会话",
+    
+    "pause_between_trials": false,
+    "_pause_between_trials_comment": "是否在试次间自动暂停",
+    
+    "show_progress": true,
+    "_show_progress_comment": "是否显示进度信息"
+  },
+  
+  "debug": {
+    "debug_mode": false,
+    "_debug_mode_comment": "是否启用调试模式",
+    
+    "verbose_logging": false,
+    "_verbose_logging_comment": "是否启用详细日志",
+    
+    "log_events": true,
+    "_log_events_comment": "是否记录所有事件"
+  }
+}
