@@ -1307,10 +1307,10 @@ SOFTWARE.
 
 ## 联系方式
 
-- **项目主页**：[GitHub Repository](https://github.com/your-username/tasktrain)
-- **问题反馈**：[GitHub Issues](https://github.com/your-username/tasktrain/issues)
-- **邮件联系**：your-email@example.com
-- **技术讨论**：[Discussions](https://github.com/your-username/tasktrain/discussions)
+- **项目主页**：[GitHub Repository](https://github.com/superxsy/tasktrain)
+- **问题反馈**：[GitHub Issues](https://github.com/superxsy/tasktrain/issues)
+- **邮件联系**：vetxsy@163.com
+- **技术讨论**：[Discussions](https://github.com/superxsy/tasktrain/discussions)
 
 ## 引用
 
