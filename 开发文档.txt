@@ -1,0 +1,234 @@
+你是一名资深行为学实验工程师与Python开发者。请使用Python 3.10+与Pygame（仅此一个第三方库）编写一个单文件可运行程序，用键盘与屏幕来完全模拟以下小鼠三键序列任务。要求代码可直接运行，无外部依赖（除 Pygame）。程序需有实时UI与离线逐trial日志，并具备自适应训练阶段与严谨的“松开判定”逻辑。请严格按以下规范实现：
+
+1. 任务目标与两类训练阶段
+
+最终任务（Sequence-3）：trial 开始后依次经历 3 个阶段：
+
+阶段1：L1 亮起 → 等待 B1；B1 按下并在“松开判定”达成后，L1 熄灭 → 进入 I1。
+
+阶段2：L2 亮起 → 等待 B2；B2 按下且“松开判定”达成后，L2 熄灭 → 进入 I2。
+
+阶段3：L3 亮起 → 等待 B3；B3 按下且“松开判定”达成后，L3 熄灭 → 立即给水奖励 R → trial 结束 → 进入 ITI。
+
+入门任务（Shaping-1）：仅一个 LED（可在 L1L2L3 中选择其一）常亮。只要按下对应按钮并“松开判定”达成，立即给水 R → 进入 ITI。
+
+程序需提供阶段切换：可在 UI 中显示当前阶段（Shaping-1  Sequence-3），并在配置中选择默认阶段。允许按热键在两阶段间切换（见第 6 节）。
+
+2. 键盘映射与UI表示
+
+键盘默认映射（可在配置中改）：
+
+B1 = J，B2 = K，B3 = L
+
+开始暂停 = SPACE；结束会话 = Q；重置会话 = R；切换阶段 = TAB；帮助参数叠层 = H
+
+UI 要求（用 Pygame 绘制）：
+
+画面中以三个圆点或方块代表 L1L2L3（亮灯高亮、熄灭置灰）。
+
+明显区域显示：Session 信息（被试ID、session编号、阶段模式、trial计数、当前trial状态）、当前 trial 详细状态（处于 L1L2L3 或 I1I2ITIR，剩余时间等）。
+
+显示历史 trial 结果条带：按顺序显示最近 N（如 30）个 trial 的结果编码；0=正确，1=未按压，2=按错按钮，3=按住未松开，4=过早按压（在 I1I2ITI未等待期按键）。编码要与日志一致。
+
+显示累计统计：已完成 trial 数、正确数、错误各类型数量、准确率。
+
+显示当前参数（关键时长与 ITI 设置、release window、阶段模式等）。
+
+奖励 R 时在 UI 上有明显指示（例如在“奖励”区域点亮指示灯或文字）。
+
+3. 精确时序与“松开判定”逻辑（关键）
+
+所有计时使用 time.perf_counter() 的单调高精度时间。UI 刷新可 60 FPS，但判定不依赖帧率。
+
+每个等待阶段（等待 B1B2B3）都有一个等待窗口（例如 3.0s）。若在窗口内发生正确按键的 KEYDOWN，则进入“松开判定”：
+
+松开判定规则：必须在该阶段等待窗口“结束时刻 + release_window”之前收到对应 KEYUP（松手）事件，才算该阶段正确完成。
+
+示例：等待 3.0s，release_window=1.0s；若在 t=2.5s 按下，最晚需在 t=3.0+1.0=3.5 前松手；若未在 3.5 前松手 → 记为错误类型3（按住未松开），trial 立即失败并进入 ITI。
+
+错误与提前按压：
+
+在非等待期（例如 I1I2ITI 或其他阶段）按任何任务按钮，立即记为错误类型4（过早按压）并中止当前 trial → 进入 ITI（用“错误 ITI”）。
+
+在等待窗口内若按了错误的按钮，立即记为错误类型2（按错按钮）并中止当前 trial。
+
+若等待窗口超时未按，记为错误类型1（未按压）。
+
+同一 trial 只记录首个错误类型作为该 trial 的错误标签。
+
+4. 可调参数（需支持热加载热键覆盖）
+
+所有参数用JSON 配置文件初始化（程序首次运行自动生成默认 config.json，之后可编辑）。同时提供帮助叠层显示当前参数与热键说明，并支持部分参数热键微调（如调整等待时间 ±0.1s、release_window ±0.1s）。
+
+主要参数（带默认示例，单位秒，均可修改）：
+
+mode sequence3 或 shaping1
+
+shaping_led 1（可 123）
+
+wait_L1 3.0，wait_L2 3.0，wait_L3 3.0
+
+I1 0.5，I2 0.5
+
+R_duration 0.3（奖励显示时长）
+
+release_window 1.0
+
+ITI_fixed_correct 1.0，ITI_rand_correct 1.0（实际 ITI = 固定 + [0, 随机] 的均匀分布）
+
+ITI_fixed_error 2.0，ITI_rand_error 1.0
+
+max_trials 500（本 session 上限）
+
+subject_id M001，session_label 自动 YYYYMMDD_HHMMSS
+
+键位映射：key_B1 J, key_B2 K, key_B3 L
+
+视觉参数：窗口尺寸、LED 大小、颜色（可简化）
+
+rng_seed 可指定随机种子，保证 ITI 抖动可复现
+
+热键：
+
+H 显示隐藏帮助与参数概览
+
+TAB 切换训练阶段（Shaping-1 ↔ Sequence-3）
+
+[  ] 将当前等待阶段的等待时间 -0.1s  +0.1s（若位于 L1 等待阶段则改 wait_L1，位于 L2 则改 wait_L2，以此类推）
+
+-  = 全局 release_window -0.1s  +0.1s
+
+SPACE 开始暂停
+
+R 重置 session（清空当前 session 统计，但不改配置文件）
+
+Q 正常保存并退出
+
+要求：热键调整只改变内存中的当前运行参数，不直接写回配置文件；但会话日志中要完整记录“每个 trial 开始时的参数快照”。
+
+5. ITI 规则
+
+trial 正确结束 → 使用 ITI_fixed_correct + U[0, ITI_rand_correct]
+
+trial 错误结束 → 使用 ITI_fixed_error + U[0, ITI_rand_error]
+
+UI 显示正在经历的 ITI 剩余时间。
+
+ITI 内任何任务键按下 → 错误类型4（过早按压），立即中止 ITI，开始新的 trial（按错误 ITI 逻辑计入上一个 trial 的错误）。
+
+6. 会话控制与状态机（必须以状态机实现）
+
+请用明确的有限状态机（FSM），每个状态有进入时间戳与条件转移：
+
+STATE_ITI → STATE_L1_WAIT → STATE_I1 → STATE_L2_WAIT → STATE_I2 → STATE_L3_WAIT → STATE_REWARD → STATE_ITI
+
+Shaping-1 模式仅使用：STATE_ITI → STATE_SHAPING_WAIT（对应某个 LED 常亮）→ STATE_REWARD → STATE_ITI
+
+每个状态应有enter() 与 update() 逻辑，计时基于 perf_counter()，事件基于 KEYDOWNKEYUP。
+
+7. 在线信息与错误编码
+
+在线 UI 必须实时显示：trial 序号、当前状态、剩余时间、最近一次按下松开的绝对时间（相对 session 开始的秒）、当前阶段的按下时间与松开时间（若已发生）。
+
+历史结果条带：显示近 30 个 trial 的结果编码（01234），0 用绿色，其余用不同颜色（或数字+色块）。
+
+累计统计：各错误类型计数必须与离线日志一致。
+
+8. 离线数据记录（每个 trial 一个文件 + 会话汇总）
+
+目录结构：data{subject_id}{session_label}
+
+每个 trial 生成 trial_{index04d}.json
+
+同时生成一个会话汇总 session_summary.csv（实时追加）
+
+trial_XXXX.json 内容（示例键）：
+
+subject_id, session_label, trial_index
+
+mode（sequence3 或 shaping1）
+
+config_snapshot（该 trial 开始时的全部关键参数副本）
+
+trial_start_walltime_iso（墙钟时间 ISO8601），trial_start_monotonic（perf_counter 起点）
+
+events 按时序记录带时间戳的事件数组（含状态进入、LED onoff、KEYDOWNKEYUP（含按键名）、奖励 onoff、进入退出 ITI）
+
+stage_timestamps 各阶段的开始结束时间（相对 trial_start_monotonic 的秒）
+
+press_release_times 对每个等待阶段记录 press_time 与 release_time（若有）
+
+result_code（01234），result_text
+
+reward_duration_actual，iti_duration_actual
+
+session_summary.csv 字段（每trial一行）：
+
+trial_index, mode, result_code, result_text, wait_L1,L2,L3, I1,I2, R_duration, release_window,
+
+press_timesrelease_times（以秒写入，缺省为空），reward_onset, reward_offset,
+
+iti_duration_actual, trial_start_walltime_iso
+
+写文件需考虑实时落盘（试次结束即写），并捕获异常（IO失败不影响UI与下个trial，但在屏幕与控制台给出告警）。
+
+9. 自适应与难度调节（保学习曲线平滑）
+
+实现一个简单可选的自适应策略（配置中开关）：
+
+在 Sequence-3 模式下，基于滑动窗口（如近 20 个 trial）的正确率，自动调整 wait_L123：
+
+若正确率 ≥ 阈值（如 85%），将对应等待时间各自缩短 step（如 0.1s），但不低于 min_wait（如 1.0s）
+
+若正确率 ≤ 下阈值（如 60%），各自延长 step，但不超过 max_wait（如 5.0s）
+
+自适应的每次调整须记录入日志（写入 trial json 的 adaptive_adjustments 字段，并在 UI 短暂提示）。
+
+10. 可扩展 IO 抽象（为未来 DAQ 做准备）
+
+虽然当前仅键盘+屏幕，但请定义一个简单的硬件抽象层接口类（例如 IOBackend）：
+
+现在的实现 KeyboardScreenBackend：处理键盘事件与Pygame显示
+
+未来可扩展 NIDaqBackend：预留 set_led(i, on), read_button(i), trigger_reward(duration) 等接口（当前仅桩函数注释说明）。
+
+抽象层保证任务状态机的逻辑与具体 IO 解耦。
+
+11. 代码质量与结构
+
+单文件实现，但模块化清晰：常量配置、状态机类、IO后端类、日志器、主循环、UI渲染分成清晰的类或函数块。
+
+关键函数有注释与文档字符串；对判定边界（如“松开判定”）给出清晰注释。
+
+程序启动时若不存在配置文件，写入默认 config.json；启动日志显示关键参数与数据保存路径。
+
+程序退出时，确保文件句柄关闭。
+
+12. 接受测试（请在代码底部注释中给出测试指引）
+
+请在源码末尾提供“手动测试脚本”说明，覆盖至少：
+
+正确序列：在 L1L2L3 等待期内按下对应键并在 release_window 内松开 → 结果 0。
+
+未按压：在 L1 等待期不按 → 结果 1。
+
+按错按钮：在 L2 等待期按错键 → 结果 2。
+
+按住未松开：在 L3 等待期末按下但超过 stage_end+release_window 才松开 → 结果 3。
+
+ITI 内提前按：ITI 期间按任一任务键 → 结果 4。
+并检查 data{subject_id}{session_label} 下 trial json 与 session_summary.csv 的一致性。
+
+补充实现要求
+
+仅使用标准库 + pygame。
+
+需要 requirements.txt（只有一行：pygame）与一个默认 config.json 的自动生成逻辑。
+
+默认窗口大小建议 900×600；颜色、字体等不做苛求，清晰可读即可。
+
+请在程序运行时打印帮助热键速览（同 UI 中的帮助叠层内容）。
+
+任何异常（文件、权限等）以醒目方式在控制台与 UI 顶部红字提示。
+
+请直接输出完整 Python 源码（一个文件），并附带 requirements.txt 的文本内容（放在代码块中）。无需额外解释。

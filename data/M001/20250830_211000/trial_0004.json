@@ -1,0 +1,104 @@
+{
+  "subject_id": "M001",
+  "session_label": "20250830_211000",
+  "trial_index": 4,
+  "mode": "sequence3",
+  "config_snapshot": {
+    "mode": "sequence3",
+    "shaping_led": 1,
+    "wait_L1": 3.0,
+    "wait_L2": 3.0,
+    "wait_L3": 3.0,
+    "I1": 0.5,
+    "I2": 0.5,
+    "R_duration": 0.3,
+    "release_window": 1.0,
+    "ITI_fixed_correct": 1.0,
+    "ITI_rand_correct": 1.0,
+    "ITI_fixed_error": 2.0,
+    "ITI_rand_error": 1.0,
+    "max_trials": 500,
+    "subject_id": "M001",
+    "session_label": "20250830_211000",
+    "key_B1": "j",
+    "key_B2": "k",
+    "key_B3": "l",
+    "adaptive_enabled": false,
+    "adaptive_window": 20,
+    "adaptive_threshold_high": 0.85,
+    "adaptive_threshold_low": 0.6,
+    "adaptive_step": 0.1,
+    "min_wait": 1.0,
+    "max_wait": 5.0,
+    "window_width": 1000,
+    "window_height": 800,
+    "led_radius": 30,
+    "rng_seed": null
+  },
+  "trial_start_walltime_iso": "2025-08-31T11:38:13.169897",
+  "trial_start_monotonic": 13.349653800000851,
+  "events": [
+    {
+      "type": "trial_start",
+      "timestamp": 13.349657800000386
+    },
+    {
+      "type": "state_enter",
+      "state": "L1_WAIT",
+      "timestamp": 13.349660300000323
+    },
+    {
+      "type": "led_on",
+      "led": 1,
+      "timestamp": 13.349662900000112
+    },
+    {
+      "type": "keydown",
+      "key": "j",
+      "timestamp": 13.631198700000823
+    },
+    {
+      "type": "keydown",
+      "key": "j",
+      "timestamp": 13.631203700000697
+    },
+    {
+      "type": "keyup",
+      "key": "j",
+      "timestamp": 13.729186900000059
+    },
+    {
+      "type": "led_off",
+      "led": 1,
+      "timestamp": 13.729191500000525
+    },
+    {
+      "type": "state_enter",
+      "state": "I1",
+      "timestamp": 13.729192800000419
+    },
+    {
+      "type": "keydown",
+      "key": "k",
+      "timestamp": 13.994034200000897
+    },
+    {
+      "type": "trial_end",
+      "result_code": 4,
+      "result_text": "Premature Press",
+      "timestamp": 13.994039800000792
+    }
+  ],
+  "press_release_times": {
+    "press_times": [
+      13.631202600000506
+    ],
+    "release_times": [
+      13.729189900000165
+    ]
+  },
+  "result_code": 4,
+  "result_text": "Premature Press",
+  "reward_duration_actual": 0,
+  "iti_duration_actual": 2.9842898623096916
+}

@@ -1,0 +1,83 @@
+1. 用户希望优化release window的逻辑：1）当按压时间超过release window时，LED应该立即熄灭并判定失败；2）在ITI期间需要检测没有按钮被按下才能开始下一个trial。我需要修改状态机的逻辑来实现这些改进。
+
+## 已实现的优化功能：
+### 1. Release Window 超时立即处理
+- 修改了 update 方法 ：在 L1_WAIT 、 L2_WAIT 、 L3_WAIT 和 SHAPING_WAIT 状态下，系统现在会实时检测按钮是否被按压超过 release window 时间
+- 立即响应机制 ：一旦检测到按压时间超过 release_deadline ，LED 会立即熄灭，trial 被标记为失败（ RESULT_HOLD_TOO_LONG ），并直接进入 ITI 状态
+- 之前的行为 ：需要等到按钮松开才会检测超时并判定失败
+- 现在的行为 ：按压时间一超过 release window，立即判定失败
+### 2. ITI 期间按钮状态检测
+- 修改了 ITI 状态逻辑 ：在 Inter-Trial Interval (ITI) 结束时，系统会检查所有任务按钮（J、K、L）是否处于未按压状态
+- 安全机制 ：只有当所有按钮都未被按下时，才会开始下一个 trial
+- 防误触发 ：如果在 ITI 期间有任何按钮被按下，系统会等待直到所有按钮都松开
+### 3. 代码结构优化
+- 添加了 _get_current_led_index 辅助方法 ：用于获取当前状态对应的 LED 索引
+- 修复了代码结构问题 ：纠正了 _get_current_wait_duration 方法中错位的 else 分支
+## 技术实现细节：
+- 使用 self.pressed_keys 集合来跟踪当前按下的按键
+- 通过 release_deadline 计算精确的超时时间点
+- 在状态更新循环中实时检测按压时间
+- 确保 ITI 到下一个 trial 的平滑过渡
+程序现在已重新启动并正常运行，所有优化功能已生效。用户可以测试新的 release window 行为和 ITI 期间的按钮检测功能。
+
+
+2.用户需要三个修改：1. Release Window超时立即处理（即使LED等待时间未到）；2. ITI期间多次按压只记录为1次错误；3. UI调整增加间隔。我需要先查看当前的release window检测逻辑，然后修改代码实现这些优化。
+
+我已成功完成了对 mouse_sequence_task.py 程序的三项优化：
+
+## 1. Release Window 超时立即处理
+- 修改了 release window 检测逻辑 ：现在 release window 从按钮按下时开始计算，而不是从 LED 等待时间开始
+- 立即响应机制 ：一旦按压时间超过 config.release_window （例如1秒），LED 立即熄灭，trial 被标记为失败（ RESULT_HOLD_TOO_LONG ），并直接进入 ITI 状态
+- 示例场景 ：等待时间3秒，Release Window 1秒，如果在1秒时按下，2秒时还未松开，则立即判定失败，无需等到3秒
+## 2. ITI 期间多次按压只记录1次错误
+- 添加了 iti_error_recorded 标志 ：在 TaskStateMachine 类中新增此标志来跟踪 ITI 期间是否已记录错误
+- 防重复记录机制 ：在 ITI 状态下，第一次按键会记录为 RESULT_PREMATURE_PRESS 错误，后续按键会被忽略
+- 自动重置 ：每次进入新的 ITI 状态时，标志会自动重置，确保下一个 ITI 期间可以正常检测
+## 3. UI 布局调整
+- 增加了间隔 ：将 STATISTICS、RECENT RESULTS 和 PARAMETERS 三个区域的 y 坐标从 300 调整到 350
+- 避免遮挡 ：现在这些信息区域与上方的 Time 显示和 LED 圆圈之间有了更充足的间隔
+- 改善可读性 ：UI 布局更加清晰，避免了四个圆圈遮挡文字信息的问题
+## 技术实现细节：
+- 使用 self.current_press_time 和 time.perf_counter() 进行精确的按压时间计算
+- 在 _enter_iti() 方法中重置错误记录标志
+- 在 _handle_keydown() 方法中添加 ITI 状态的特殊处理逻辑
+- 调整了 UI 渲染函数中的坐标位置
+程序现在已重新启动并正常运行，所有优化功能已生效。用户可以测试新的 release window 行为、ITI 期间的按钮检测功能，以及改进后的 UI 布局。
+
+
+3. 用户要求两个修改：1. ITI期间检测到按压不要重置ITI时间；2. 修改统计逻辑，total只记录trial数，ITI错误单独计数且不影响正确率。我需要先查看当前ITI处理逻辑和统计计算代码。
+我已成功完成了用户要求的两项修改：
+
+## 1. ITI期间按压不重置ITI时间
+- 修改了ITI按压处理逻辑 ：现在在ITI状态下检测到按压时，不再调用 end_trial() 函数，避免了重置ITI时间
+- 继续当前ITI ：ITI期间的按压只会记录为错误事件，但ITI倒计时会继续进行，不会重新开始
+- 防重复记录 ：同一ITI期间多次按压仍然只记录一次错误
+## 2. 统计逻辑优化
+- 新增ITI错误计数器 ：添加了 self.iti_errors 变量来单独统计ITI期间的错误按压
+- Total只记录Trial数 ：统计显示中的"Total"现在只计算实际的trial数量（正确、无按压、错误按钮、按住过久、过早按压），不包括ITI错误
+- 正确率计算排除ITI错误 ：正确率的计算基础是实际的trial数，ITI错误不影响正确率统计
+- 独立显示ITI错误 ：在统计面板中新增"ITI Errors"行，单独显示ITI期间的错误次数
+## 技术实现细节：
+- 在 TaskStateMachine 初始化时添加了 self.iti_errors = 0 计数器
+- 修改了 _handle_keydown 方法中的ITI状态处理逻辑
+- ITI错误会记录为 iti_error 事件类型，包含按键和时间戳信息
+- 更新了UI统计显示，增加了ITI错误的独立显示行
+## 行为变化：
+- 之前 ：ITI期间按压 → 立即结束当前ITI → 开始新的错误ITI
+- 现在 ：ITI期间按压 → 记录ITI错误 → 继续当前ITI倒计时
+- 统计 ：ITI错误现在单独计数，不计入trial总数和正确率计算
+程序已重新启动并正常运行，用户可以测试新的ITI处理逻辑和统计显示功能。
+
+### 技术实现要点
+- 在UI类中添加了 `_setup_input_boxes` 方法初始化输入框
+- 实现了 `handle_mouse_click` 、 `handle_text_input` 等交互处理方法
+- 修改了主事件循环以支持文本输入和鼠标交互
+- 扩展了KeyboardScreenBackend类以处理新的事件类型
+程序已成功启动并运行，所有新功能都已集成到界面中，用户现在可以通过图形界面实时调整实验参数。
+
+
+4.需要为参数设置功能添加保存和读取功能，包括保存到配置文件、从配置文件加载参数，以及相应的成功/失败提示信息。
+
+需要为参数设置功能添加保存和读取功能。我将创建一个todo列表来规划实现步骤：1. 添加保存和加载按钮到UI界面；2. 实现保存参数到config.json的功能；3. 实现从config.json加载参数的功能；4. 添加成功/失败提示信息显示。
+
+5. 程序运行时存在输入法问题：默认中文输入法导致JKL等按键无法直接生效，每次需要手动按Shift键切换为英文输入。请提供解决方案使程序运行时能自动识别并采用英文输入状态。

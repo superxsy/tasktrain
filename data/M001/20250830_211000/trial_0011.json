@@ -1,0 +1,196 @@
+{
+  "subject_id": "M001",
+  "session_label": "20250830_211000",
+  "trial_index": 11,
+  "mode": "sequence3",
+  "config_snapshot": {
+    "mode": "sequence3",
+    "shaping_led": 1,
+    "wait_L1": 3.0,
+    "wait_L2": 3.0,
+    "wait_L3": 3.0,
+    "I1": 0.5,
+    "I2": 0.5,
+    "R_duration": 0.3,
+    "release_window": 1.0,
+    "ITI_fixed_correct": 1.0,
+    "ITI_rand_correct": 1.0,
+    "ITI_fixed_error": 2.0,
+    "ITI_rand_error": 1.0,
+    "max_trials": 500,
+    "subject_id": "M001",
+    "session_label": "20250830_211000",
+    "key_B1": "j",
+    "key_B2": "k",
+    "key_B3": "l",
+    "adaptive_enabled": false,
+    "adaptive_window": 20,
+    "adaptive_threshold_high": 0.85,
+    "adaptive_threshold_low": 0.6,
+    "adaptive_step": 0.1,
+    "min_wait": 1.0,
+    "max_wait": 5.0,
+    "window_width": 1000,
+    "window_height": 800,
+    "led_radius": 30,
+    "rng_seed": null
+  },
+  "trial_start_walltime_iso": "2025-08-31T11:38:42.824690",
+  "trial_start_monotonic": 41.07542850000027,
+  "events": [
+    {
+      "type": "trial_start",
+      "timestamp": 41.07543370000076
+    },
+    {
+      "type": "state_enter",
+      "state": "L1_WAIT",
+      "timestamp": 41.07543600000008
+    },
+    {
+      "type": "led_on",
+      "led": 1,
+      "timestamp": 41.075438300000314
+    },
+    {
+      "type": "keydown",
+      "key": "j",
+      "timestamp": 41.49918410000009
+    },
+    {
+      "type": "keydown",
+      "key": "j",
+      "timestamp": 41.499189100000876
+    },
+    {
+      "type": "keyup",
+      "key": "j",
+      "timestamp": 41.61272480000025
+    },
+    {
+      "type": "led_off",
+      "led": 1,
+      "timestamp": 41.6127305
+    },
+    {
+      "type": "state_enter",
+      "state": "I1",
+      "timestamp": 41.61273230000006
+    },
+    {
+      "type": "state_enter",
+      "state": "L2_WAIT",
+      "timestamp": 42.11456740000085
+    },
+    {
+      "type": "led_on",
+      "led": 2,
+      "timestamp": 42.114570300000196
+    },
+    {
+      "type": "keydown",
+      "key": "k",
+      "timestamp": 42.362367200000335
+    },
+    {
+      "type": "keydown",
+      "key": "k",
+      "timestamp": 42.36237240000082
+    },
+    {
+      "type": "keyup",
+      "key": "k",
+      "timestamp": 42.50763950000055
+    },
+    {
+      "type": "led_off",
+      "led": 2,
+      "timestamp": 42.50764810000055
+    },
+    {
+      "type": "state_enter",
+      "state": "I2",
+      "timestamp": 42.50765030000002
+    },
+    {
+      "type": "state_enter",
+      "state": "L3_WAIT",
+      "timestamp": 43.01448620000065
+    },
+    {
+      "type": "led_on",
+      "led": 3,
+      "timestamp": 43.01448850000088
+    },
+    {
+      "type": "keydown",
+      "key": "l",
+      "timestamp": 43.19471060000069
+    },
+    {
+      "type": "keydown",
+      "key": "l",
+      "timestamp": 43.194715700000415
+    },
+    {
+      "type": "keyup",
+      "key": "l",
+      "timestamp": 43.33841040000061
+    },
+    {
+      "type": "led_off",
+      "led": 3,
+      "timestamp": 43.33841610000036
+    },
+    {
+      "type": "state_enter",
+      "state": "REWARD",
+      "timestamp": 43.33841760000087
+    },
+    {
+      "type": "led_off",
+      "led": 1,
+      "timestamp": 43.3384201000008
+    },
+    {
+      "type": "led_off",
+      "led": 2,
+      "timestamp": 43.33842050000021
+    },
+    {
+      "type": "led_off",
+      "led": 3,
+      "timestamp": 43.33842080000068
+    },
+    {
+      "type": "reward_on",
+      "timestamp": 43.338421800000106
+    },
+    {
+      "type": "reward_off",
+      "timestamp": 43.64882410000064
+    },
+    {
+      "type": "trial_end",
+      "result_code": 0,
+      "result_text": "Correct",
+      "timestamp": 43.64882690000013
+    }
+  ],
+  "press_release_times": {
+    "press_times": [
+      41.499188000000686,
+      42.362371400000484,
+      43.19471470000008
+    ],
+    "release_times": [
+      41.61272860000008,
+      42.5076454,
+      43.338413700000274
+    ]
+  },
+  "result_code": 0,
+  "result_text": "Correct",
+  "reward_duration_actual": 0.3,
+  "iti_duration_actual": 1.1549219584172974
+}
